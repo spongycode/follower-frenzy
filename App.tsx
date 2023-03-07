@@ -1,14 +1,12 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {
   Animated,
-  TouchableOpacity,
-  Text,
   Dimensions,
   StyleSheet,
   SafeAreaView,
-  View,
 } from 'react-native';
 import CustomCard from './components/CustomCard';
+import FAB from './components/FAB';
 var database = require('./data/insta_db.json');
 const windowHeight = Dimensions.get('window').height;
 const blockHeight = windowHeight / 2;
@@ -21,6 +19,7 @@ const App = () => {
     fullname: 'Joe Smith',
     is_verified: true,
     followers_count: 234090,
+    image_url: "https://"
   };
 
   const [isAnimating, setIsAnimating] = useState(false);
@@ -132,50 +131,37 @@ const App = () => {
       },
     ],
   };
-
+  
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <Animated.View style={blockStyleA}>
         <CustomCard
           fullname={stateA.fullname}
           username={stateA.username}
           followers={stateA.followers_count}
-        />
+          image_url={stateA.image_url}
+          />
       </Animated.View>
       <Animated.View style={blockStyleB}>
         <CustomCard
           fullname={stateB.fullname}
           username={stateB.username}
           followers={stateB.followers_count}
-        />
-        {!btn_hide ? (
-          <View style={styles.btn_container}>
-            <TouchableOpacity
-              style={styles.swipeButton}
-              onPress={handleButtonPress}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 20}}>
-                LOW
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.swipeButton}
-              onPress={handleButtonPress}>
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 20}}>
-                HIGH
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <></>
-        )}
+          image_url={stateB.image_url}
+          />
       </Animated.View>
       <Animated.View style={blockStyleC}>
         <CustomCard
           fullname={stateC.fullname}
           username={stateC.username}
           followers={stateC.followers_count}
-        />
+          image_url={stateC.image_url}
+          />
       </Animated.View>
+      {!btn_hide && <FAB color="#B50F27" name="arrow-down-bold" isUp={false} handleButtonPress={handleButtonPress}/>}
+      {!btn_hide && <FAB color="#056016" name="arrow-up-bold" isUp={true} handleButtonPress={handleButtonPress}/>}
+
+
     </SafeAreaView>
   );
 };
@@ -183,23 +169,4 @@ const App = () => {
 export default App;
 
 const styles = StyleSheet.create({
-  btn_container: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginTop: 10,
-  },
-  blockText: {
-    fontWeight: 'bold',
-    fontSize: 40,
-    color: '#fff',
-    alignSelf: 'center',
-    margin: 100,
-  },
-  swipeButton: {
-    backgroundColor: '#4C4B16',
-    width: 100,
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 6,
-  },
 });

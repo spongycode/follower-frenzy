@@ -1,15 +1,17 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { ImageBackground, StyleSheet, Text} from 'react-native';
 import React from 'react';
 
 const CustomCard = (props: any) => {
   return (
-    <View style={styles.container}>
+    <ImageBackground  source={{
+      uri: props.image_url,
+    }} imageStyle={{opacity: 0.6}} style={styles.container}>
       <Text style={styles.fullname}>{props.fullname}</Text>
       <Text style={styles.username}>@{props.username}</Text>
       <Text style={styles.generalText}>has</Text>
       <Text style={styles.followers}>{props.followers}</Text>
       <Text style={styles.generalText}>followers</Text>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -18,6 +20,8 @@ export default CustomCard;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    backgroundColor: "#000",
+    flex:1,
   },
   fullname: {
     marginTop: 40,
@@ -25,6 +29,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
     color: '#fff',
+  },
+  image:{
+    width: 100,
+    height: 100,
   },
   username: {
     marginTop: 5,
