@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import CustomCard from './components/CustomCard';
 import FAB from './components/FAB';
+import { giveUrl } from './utils/api_service';
+
 var database = require('./data/insta_db.json');
 const windowHeight = Dimensions.get('window').height;
 const blockHeight = windowHeight / 2;
@@ -29,20 +31,21 @@ const App = () => {
   const [colorB, setColorB] = useState(color2);
   const [colorC, setColorC] = useState(color1);
 
+
   const [btn_hide, setBtn_hide] = useState(false);
 
   const [stateA, updateStateA] = useReducer(
-    (state: any, updates: any) => ({...state, ...updates}),
+    (state: any, updates: any) => ({ ...state, ...updates }),
     initialState,
   );
 
   const [stateB, updateStateB] = useReducer(
-    (state: any, updates: any) => ({...state, ...updates}),
+    (state: any, updates: any) => ({ ...state, ...updates }),
     initialState,
   );
 
   const [stateC, updateStateC] = useReducer(
-    (state: any, updates: any) => ({...state, ...updates}),
+    (state: any, updates: any) => ({ ...state, ...updates }),
     initialState,
   );
 
@@ -50,10 +53,22 @@ const App = () => {
     return Math.floor(Math.random() * (database.length - 1 - 0 + 1));
   };
 
-  const initGame = () => {
-    updateStateA(database[giveIdx()]);
-    updateStateB(database[giveIdx()]);
-    updateStateC(database[giveIdx()]);
+  const initGame = async () => {
+    let idx1 = giveIdx();
+    let idx2 = giveIdx();
+    let idx3 = giveIdx();
+    updateStateA(database[idx1]);
+    updateStateB(database[idx2]);
+    updateStateC(database[idx3]);
+    giveUrl(database[idx1].username).then(resp => {
+      updateStateA({ image_url: resp.data.data.user.profile_pic_url_hd });
+    })
+    giveUrl(database[idx2].username).then(resp => {
+      updateStateB({ image_url: resp.data.data.user.profile_pic_url_hd });
+    })
+    giveUrl(database[idx3].username).then(resp => {
+      updateStateC({ image_url: resp.data.data.user.profile_pic_url_hd });
+    })
   };
 
   useEffect(() => {
@@ -66,7 +81,11 @@ const App = () => {
     setColorC(colorB);
     updateStateA(stateB);
     updateStateB(stateC);
-    updateStateC(database[giveIdx()]);
+    let idx3 = giveIdx();
+    updateStateC(database[idx3]);
+    giveUrl(database[idx3].username).then(resp => {
+      updateStateC({ image_url: resp.data.data.user.profile_pic_url_hd });
+    })
   };
 
   const handleButtonPress = () => {
@@ -131,16 +150,16 @@ const App = () => {
       },
     ],
   };
-  
+
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Animated.View style={blockStyleA}>
         <CustomCard
           fullname={stateA.fullname}
           username={stateA.username}
           followers={stateA.followers_count}
           image_url={stateA.image_url}
-          />
+        />
       </Animated.View>
       <Animated.View style={blockStyleB}>
         <CustomCard
@@ -148,7 +167,7 @@ const App = () => {
           username={stateB.username}
           followers={stateB.followers_count}
           image_url={stateB.image_url}
-          />
+        />
       </Animated.View>
       <Animated.View style={blockStyleC}>
         <CustomCard
@@ -156,10 +175,10 @@ const App = () => {
           username={stateC.username}
           followers={stateC.followers_count}
           image_url={stateC.image_url}
-          />
+        />
       </Animated.View>
-      {!btn_hide && <FAB color="#B50F27" name="arrow-down-bold" isUp={false} handleButtonPress={handleButtonPress}/>}
-      {!btn_hide && <FAB color="#056016" name="arrow-up-bold" isUp={true} handleButtonPress={handleButtonPress}/>}
+      {!btn_hide && <FAB color="#B50F27" name="arrow-down-bold" isUp={false} handleButtonPress={handleButtonPress} />}
+      {!btn_hide && <FAB color="#056016" name="arrow-up-bold" isUp={true} handleButtonPress={handleButtonPress} />}
 
 
     </SafeAreaView>

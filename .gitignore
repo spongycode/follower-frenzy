@@ -63,3 +63,4 @@ yarn-error.log
 .metro-health-check*
 
 data/insta_db.json
+utils/api_service.tsx

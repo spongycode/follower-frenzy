@@ -1,11 +1,11 @@
-import { ImageBackground, StyleSheet, Text} from 'react-native';
+import { ImageBackground, StyleSheet, Text } from 'react-native';
 import React from 'react';
 
 const CustomCard = (props: any) => {
   return (
-    <ImageBackground  source={{
+    <ImageBackground source={{
       uri: props.image_url,
-    }} imageStyle={{opacity: 0.6}} style={styles.container}>
+    }} imageStyle={{ opacity: 0.6 }} style={styles.container}>
       <Text style={styles.fullname}>{props.fullname}</Text>
       <Text style={styles.username}>@{props.username}</Text>
       <Text style={styles.generalText}>has</Text>
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: "#000",
-    flex:1,
+    flex: 1,
   },
   fullname: {
     marginTop: 40,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
-  image:{
+  image: {
     width: 100,
     height: 100,
   },
