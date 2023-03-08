@@ -6,11 +6,13 @@ const CustomCard = (props: any) => {
     <ImageBackground source={{
       uri: props.image_url,
     }} imageStyle={{ opacity: 0.6 }} style={styles.container}>
-      <Text style={styles.fullname}>{props.fullname}</Text>
-      <Text style={styles.username}>@{props.username}</Text>
-      <Text style={styles.generalText}>has</Text>
-      <Text style={styles.followers}>{props.followers}</Text>
-      <Text style={styles.generalText}>followers</Text>
+      <Text style={[styles.fullname, styles.shadowText]}>{props.fullname}</Text>
+      <Text style={[styles.username, styles.shadowText]}>@{props.username}</Text>
+      <Text style={[styles.generalText, styles.shadowText]}>has</Text>
+      <Text style={[styles.followers, styles.shadowText]}>
+        {props.hideFollowers ? "?" : props.followers}
+      </Text>
+      <Text style={[styles.generalText, styles.shadowText]}>followers</Text>
     </ImageBackground>
   );
 };
@@ -52,4 +54,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  shadowText: {
+    paddingHorizontal: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 35
+  }
 });
