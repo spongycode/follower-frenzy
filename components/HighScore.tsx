@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { giveHighScore } from '../utils/storage_utils'
+import React from 'react'
 
 const HighScore = (props: any) => {
     return (

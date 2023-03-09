@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import {
     Animated,
     Dimensions,
@@ -12,8 +12,9 @@ import Score from '../components/Score';
 import HighScore from '../components/HighScore';
 import GameOverButton from '../components/GameOverButton';
 import { giveHighScore, updateHighScore } from '../utils/storage_utils';
-
-
+import { useBackHandler } from '@react-native-community/hooks';
+import { useNavigation } from "@react-navigation/core";
+import Life from '../components/Life';
 
 var database = require('../data/insta_db.json');
 const windowHeight = Dimensions.get('window').height;
@@ -23,6 +24,9 @@ const color2 = '#000';
 
 
 const Game = () => {
+
+    const navigation = useNavigation();
+
     const initialState = {
         username: 'joesmith',
         fullname: 'Joe Smith',
@@ -46,6 +50,7 @@ const Game = () => {
     const [score, setScore] = useState(0);
 
     const [highScore, setHighScore] = useState(0);
+    const [life, setLife] = useState(3);
 
 
     const [stateA, updateStateA] = useReducer(
@@ -64,7 +69,7 @@ const Game = () => {
     );
 
     const giveIdx = () => {
-        return Math.floor(Math.random() * (database.length - 1 - 0 + 1));
+        return Math.floor(Math.random() * (database.length));
     };
 
     const displayHighScore = () => {
@@ -94,9 +99,26 @@ const Game = () => {
         })
     };
 
+
+    const createTwoButtonAlert = (() => {
+        Alert.alert('Confirm Exit', 'Are you sure you want to exit? Any unsaved progress will be lost. 😱', [
+            {
+                text: 'Keep Playing 🎮',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            { text: 'Exit Game 🚪', onPress: () => { console.log('OK Pressed'); navigation.goBack() } },
+        ])
+    });
+
     useEffect(() => {
         initGame();
     }, []);
+
+    useBackHandler(() => {
+        createTwoButtonAlert();
+        return true;
+    })
 
     const transferState = () => {
         setColorA(colorB);
@@ -126,6 +148,19 @@ const Game = () => {
             updateHighScore(Math.max(score + 1, highScore));
             setHighScore(Math.max(score + 1, highScore));
             setScore(score + 1);
+            Animated.timing(animatedValue, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: false,
+            }).start(() => {
+                setIsAnimating(false);
+                transferState();
+                setBtn_hide(false);
+                setHideFollowers(true);
+                animatedValue.setValue(0);
+            });
+        } else if (life > 0) {
+            setLife(life - 1);
             Animated.timing(animatedValue, {
                 toValue: 1,
                 duration: 200,
@@ -224,6 +259,7 @@ const Game = () => {
             {gameOver && <GameOverButton />}
             <Score score={score} />
             <HighScore highScore={highScore} />
+            <Life life={life} />
 
 
 
