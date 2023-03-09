@@ -6,7 +6,8 @@ const CustomCard = (props: any) => {
     <ImageBackground source={{
       uri: props.image_url,
     }} imageStyle={{ opacity: 0.6 }} style={styles.container}>
-      <Text style={[styles.fullname, styles.shadowText]}>{props.fullname}</Text>
+      <Text numberOfLines={1}
+        style={[styles.fullname, styles.shadowText]}>{props.fullname}</Text>
       <Text style={[styles.username, styles.shadowText]}>@{props.username}</Text>
       <Text style={[styles.generalText, styles.shadowText]}>has</Text>
       <Text style={[styles.followers, styles.shadowText]}>

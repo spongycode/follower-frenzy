@@ -1,5 +1,6 @@
 import { SafeAreaView, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/core";
+
 const Home = () => {
     const navigation = useNavigation();
 

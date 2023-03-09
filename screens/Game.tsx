@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
     Animated,
     Dimensions,
@@ -8,15 +8,18 @@ import {
 import CustomCard from '../components/CustomCard';
 import FAB from '../components/FAB';
 import { giveUrl } from '../utils/api_service';
-import { useNavigation } from "@react-navigation/core";
+import Score from '../components/Score';
+import HighScore from '../components/HighScore';
+import GameOverButton from '../components/GameOverButton';
+import { giveHighScore, updateHighScore } from '../utils/storage_utils';
 
 
 
 var database = require('../data/insta_db.json');
 const windowHeight = Dimensions.get('window').height;
 const blockHeight = windowHeight / 2;
-const color1 = '#FFB84C';
-const color2 = '#F16767';
+const color1 = '#000';
+const color2 = '#000';
 
 
 const Game = () => {
@@ -27,7 +30,6 @@ const Game = () => {
         followers_count: 234090,
         image_url: "https://"
     };
-    const navigation = useNavigation();
 
 
     const [isAnimating, setIsAnimating] = useState(false);
@@ -42,6 +44,9 @@ const Game = () => {
     const [hideFollowers, setHideFollowers] = useState(true);
     const [gameOver, setGameOver] = useState(false);
     const [score, setScore] = useState(0);
+
+    const [highScore, setHighScore] = useState(0);
+
 
     const [stateA, updateStateA] = useReducer(
         (state: any, updates: any) => ({ ...state, ...updates }),
@@ -62,7 +67,16 @@ const Game = () => {
         return Math.floor(Math.random() * (database.length - 1 - 0 + 1));
     };
 
+    const displayHighScore = () => {
+        giveHighScore().then((val: any) => {
+            setHighScore(val);
+        })
+    }
+
+
     const initGame = async () => {
+        setScore(0);
+        displayHighScore();
         let idx1 = giveIdx();
         let idx2 = giveIdx();
         let idx3 = giveIdx();
@@ -90,10 +104,16 @@ const Game = () => {
         setColorC(colorB);
         updateStateA(stateB);
         updateStateB(stateC);
+        giveUrl(stateB.username).then(resp => {
+            updateStateA({ image_url: resp.data.data.user.profile_pic_url_hd });
+        })
+        giveUrl(stateC.username).then(resp => {
+            updateStateB({ image_url: resp.data.data.user.profile_pic_url_hd });
+        })
         let idx3 = giveIdx();
         updateStateC(database[idx3]);
         giveUrl(database[idx3].username).then(resp => {
-            updateStateC({ image_url: resp.data.data.user.profile_pic_url });
+            updateStateC({ image_url: resp.data.data.user.profile_pic_url_hd });
         })
     };
 
@@ -103,10 +123,12 @@ const Game = () => {
         setHideFollowers(false);
         if ((isUp && stateB.followers_count >= stateA.followers_count) ||
             (!isUp && stateA.followers_count >= stateB.followers_count)) {
+            updateHighScore(Math.max(score + 1, highScore));
+            setHighScore(Math.max(score + 1, highScore));
             setScore(score + 1);
             Animated.timing(animatedValue, {
                 toValue: 1,
-                duration: 1000,
+                duration: 200,
                 useNativeDriver: false,
             }).start(() => {
                 setIsAnimating(false);
@@ -199,35 +221,9 @@ const Game = () => {
             {!btn_hide && <FAB color="#056016" name="arrow-up-bold" isUp={true} handleButtonPress={() => handleButtonPress(true)} />}
             {!btn_hide && <FAB color="#B50F27" name="arrow-down-bold" isUp={false} handleButtonPress={() => handleButtonPress(false)} />}
 
-            {gameOver && <TouchableOpacity
-                onPress={() => navigation.navigate('Home')}
-                style={{
-                    backgroundColor: "#FFB84C",
-                    borderRadius: 0, width: "100%",
-                    padding: 15,
-                    alignItems: "center",
-                    position: 'absolute',
-                    bottom: 0,
-                    alignSelf: 'center',
-                }}>
-                <Text style={{ fontSize: 30, fontWeight: "bold", color: "#fff" }}>
-                    HOME
-                </Text>
-            </TouchableOpacity>}
-            <View
-                style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 0, width: "100%",
-                    padding: 1,
-                    alignItems: "center",
-                    position: 'absolute',
-                    bottom: "45%",
-                    alignSelf: 'center',
-                }}>
-                <Text style={{ fontSize: 40, fontWeight: "bold", color: "#000" }}>
-                    {score}
-                </Text>
-            </View>
+            {gameOver && <GameOverButton />}
+            <Score score={score} />
+            <HighScore highScore={highScore} />
 
 
 
