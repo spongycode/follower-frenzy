@@ -2,28 +2,38 @@ import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { giveHighScore } from '../utils/storage_utils'
 import { useState } from "react";
+import { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 const Home = () => {
     const navigation = useNavigation();
 
     const [highScore, setHighScore] = useState(0);
 
-    giveHighScore().then((val: any) => {
-        setHighScore(val);
-    })
+    const focus = useIsFocused();
+
+    useEffect(() => {
+        if (focus == true) {
+            giveHighScore().then((val: any) => {
+                setHighScore(val);
+            })
+        }
+    }, [focus]);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFB84C", alignItems: "center", justifyContent: "center" }}>
             <View style={{ position: "absolute", top: "25%", alignItems: "center" }}>
                 <Text style={{
-                    fontSize: 30, fontWeight: "600",
-                    color: "#fff",
+                    fontSize: 30, fontWeight: "400",
+                    color: "#fff", letterSpacing: 3,
+                    fontFamily: "tiltwarp"
                 }}>
                     HIGH SCORE
                 </Text>
                 <Text style={{
-                    fontSize: 50, fontWeight: "600",
+                    fontSize: 50, fontWeight: "800",
                     color: "#fff",
+                    fontFamily: "tiltwarp"
                 }}>
                     {highScore}
                 </Text>
@@ -36,8 +46,8 @@ const Home = () => {
                     padding: 20,
                     alignItems: "center"
                 }}>
-                <Text style={{ fontSize: 40, fontWeight: "bold", color: "#fff" }}>
-                    PLAY
+                <Text style={{ fontSize: 40, fontWeight: "800", letterSpacing: 1, color: "#fff" }}>
+                    START
                 </Text>
             </TouchableOpacity>
         </SafeAreaView>

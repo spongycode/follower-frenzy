@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, Vibration } from 'react-native';
 import {
     Animated,
     Dimensions,
@@ -38,11 +38,6 @@ const Game = () => {
 
     const [isAnimating, setIsAnimating] = useState(false);
     const [animatedValue] = useState(new Animated.Value(0));
-
-    const [colorA, setColorA] = useState(color1);
-    const [colorB, setColorB] = useState(color2);
-    const [colorC, setColorC] = useState(color1);
-
 
     const [btn_hide, setBtn_hide] = useState(false);
     const [hideFollowers, setHideFollowers] = useState(true);
@@ -107,7 +102,7 @@ const Game = () => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'Exit Game 🚪', onPress: () => { console.log('OK Pressed'); navigation.goBack() } },
+            { text: 'Exit Game 🚪', onPress: () => { navigation.goBack() } },
         ])
     });
 
@@ -121,9 +116,6 @@ const Game = () => {
     })
 
     const transferState = () => {
-        setColorA(colorB);
-        setColorB(colorC);
-        setColorC(colorB);
         updateStateA(stateB);
         updateStateB(stateC);
         giveUrl(stateB.username).then(resp => {
@@ -141,6 +133,7 @@ const Game = () => {
 
     const handleButtonPress = (isUp: boolean) => {
         setIsAnimating(true);
+        Vibration.vibrate(20);
         setBtn_hide(true);
         setHideFollowers(false);
         if ((isUp && stateB.followers_count >= stateA.followers_count) ||
@@ -161,6 +154,7 @@ const Game = () => {
             });
         } else if (life > 0) {
             setLife(life - 1);
+            Vibration.vibrate(150);
             Animated.timing(animatedValue, {
                 toValue: 1,
                 duration: 200,
@@ -174,46 +168,11 @@ const Game = () => {
             });
         } else {
             setGameOver(true);
+            Vibration.vibrate(500);
         }
     };
 
-    const blockStyleA = {
-        backgroundColor: animatedValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: [colorA, colorA],
-        }),
-        height: blockHeight,
-        transform: [
-            {
-                translateY: animatedValue.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -blockHeight],
-                }),
-            },
-        ],
-    };
-
-    const blockStyleB = {
-        backgroundColor: animatedValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: [colorB, colorB],
-        }),
-        height: blockHeight,
-        transform: [
-            {
-                translateY: animatedValue.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -blockHeight],
-                }),
-            },
-        ],
-    };
-
-    const blockStyleC = {
-        backgroundColor: animatedValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: [colorC, colorC],
-        }),
+    const blockStyle = {
         height: blockHeight,
         transform: [
             {
@@ -227,7 +186,7 @@ const Game = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Animated.View style={blockStyleA}>
+            <Animated.View style={blockStyle}>
                 <CustomCard
                     fullname={stateA.fullname}
                     username={stateA.username}
@@ -235,7 +194,7 @@ const Game = () => {
                     image_url={stateA.image_url}
                 />
             </Animated.View>
-            <Animated.View style={blockStyleB}>
+            <Animated.View style={blockStyle}>
                 <CustomCard
                     fullname={stateB.fullname}
                     username={stateB.username}
@@ -244,7 +203,7 @@ const Game = () => {
                     hideFollowers={hideFollowers}
                 />
             </Animated.View>
-            <Animated.View style={blockStyleC}>
+            <Animated.View style={blockStyle}>
                 <CustomCard
                     fullname={stateC.fullname}
                     username={stateC.username}

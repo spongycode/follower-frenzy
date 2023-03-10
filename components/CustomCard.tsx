@@ -1,5 +1,6 @@
 import { ImageBackground, StyleSheet, Text } from 'react-native';
 import React from 'react';
+import { formatNumber } from '../utils/general_utils';
 
 const CustomCard = (props: any) => {
   return (
@@ -11,10 +12,10 @@ const CustomCard = (props: any) => {
       <Text style={[styles.username, styles.shadowText]}>@{props.username}</Text>
       <Text style={[styles.generalText, styles.shadowText]}>has</Text>
       <Text style={[styles.followers, styles.shadowText]}>
-        {props.hideFollowers ? "?" : props.followers}
+        {props.hideFollowers ? "?" : formatNumber(props.followers)}
       </Text>
       <Text style={[styles.generalText, styles.shadowText]}>followers</Text>
-    </ImageBackground>
+    </ImageBackground >
   );
 };
 
@@ -30,8 +31,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     fontSize: 40,
     textAlign: 'center',
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#fff',
+    fontFamily: "josefin",
+    letterSpacing: 1
   },
   image: {
     width: 100,
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
   },
   username: {
     marginTop: 5,
-    fontSize: 22,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -47,13 +50,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
     color: '#fff',
-    fontWeight: '400',
+    fontWeight: '800',
+    fontFamily: "josefin",
   },
   followers: {
-    marginTop: 10,
-    fontSize: 35,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontFamily: "tiltwarp",
+    fontSize: 45,
+    color: "#fff", letterSpacing: 3
   },
   shadowText: {
     paddingHorizontal: 10,
