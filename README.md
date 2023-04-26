@@ -65,4 +65,4 @@ If you find a bug or would like to suggest an improvement, feel free to open an 
 
 ## 📄 License
 
-Trackit is released under the [MIT License](https://opensource.org/licenses/MIT). Feel free to modify or add to this list based on the specific features of your app. 📝
+Follower Frenzy is released under the [MIT License](https://opensource.org/licenses/MIT). Feel free to modify or add to this list based on the specific features of your app. 📝
